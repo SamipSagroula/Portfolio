@@ -132,7 +132,7 @@ const Portfolio = () => {
       title: 'FlavorFinds',
       mediaPath: '/aahomepage.png', 
       description: 'Enterprise-grade food delivery platform featuring real-time order tracking, dynamic menu management, and seamless payment integration. Built with scalability and performance in mind.',
-      tags: ['React', 'Node.js', 'MongoDB', 'Express', 'Stripe'],
+      tags: ['React', 'Node.js', 'MongoDB', 'Express', 'Esewa'],
       link: 'https://github.com/viperofficailll/FlavorFinds',
       gradient: 'from-orange-500/20 to-red-500/20'
     },
