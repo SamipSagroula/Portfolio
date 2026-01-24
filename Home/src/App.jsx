@@ -9,7 +9,7 @@ import Footer from './components/Footer';
 
 function App() {
   return (
-    <div className='min-h-screen bg-slate-50 font-sans selection:bg-blue-100 selection:text-blue-900'>
+    <div className='min-h-screen bg-blue-50 font-sans selection:bg-blue-200 selection:text-blue-900'>
       <TopBar />
       <Navbar />
       <main className='flex-grow'>
