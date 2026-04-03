@@ -1,0 +1,8 @@
+{
+  "tradingEngine": {
+    "name": "NEPSE Hybrid Ensemble",
+    "sharpeRatio": 0,
+    "maxDrawdown": 0,
+    "totalTrades": 0
+  }
+}
