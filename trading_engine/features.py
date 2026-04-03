@@ -59,30 +59,30 @@ def engineer_features(rows: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         atr = _rolling_atr(highs, lows, closes, window=14)
         for i, row in enumerate(symbol_rows):
             prev = symbol_rows[i - 1] if i > 0 else row
-            r = dict(row)
+            feature_row = dict(row)
             ret = _pct_change(row["close"], prev["close"])
             # Liquidity (Amihud)
-            r["amihud_illiquidity"] = abs(ret) / max(row["volume"], 1.0)
+            feature_row["amihud_illiquidity"] = abs(ret) / max(row["volume"], 1.0)
             # Momentum
-            r["ts_momentum_30"] = _pct_change(row["close"], symbol_rows[max(i - 30, 0)]["close"])
-            r["sector_relative_strength"] = ret - _sector_index_return(row, prev)
+            feature_row["ts_momentum_30"] = _pct_change(row["close"], symbol_rows[max(i - 30, 0)]["close"])
+            feature_row["sector_relative_strength"] = ret - _sector_index_return(row, prev)
             # SMC proxies
             prev_high = prev["high"]
             prev_low = prev["low"]
             # Market Structure Break (MSB) and Fair Value Gap (FVG) Smart Money Concept features.
-            r["market_structure_break"] = 1.0 if row["close"] > prev_high or row["close"] < prev_low else 0.0
-            r["fair_value_gap"] = 1.0 if i >= 2 and lows[i] > highs[i - 2] else 0.0
+            feature_row["market_structure_break"] = 1.0 if row["close"] > prev_high or row["close"] < prev_low else 0.0
+            feature_row["fair_value_gap"] = 1.0 if i >= 2 and lows[i] > highs[i - 2] else 0.0
             # Backward-compatible aliases.
-            r["msb"] = r["market_structure_break"]
-            r["fvg"] = r["fair_value_gap"]
+            feature_row["msb"] = feature_row["market_structure_break"]
+            feature_row["fvg"] = feature_row["fair_value_gap"]
             # Volatility
-            r["garman_klass_vol"] = garman_klass_volatility(row["open"], row["high"], row["low"], row["close"])
-            r["atr_14"] = atr[i]
+            feature_row["garman_klass_vol"] = garman_klass_volatility(row["open"], row["high"], row["low"], row["close"])
+            feature_row["atr_14"] = atr[i]
             # Labels
             next_close = symbol_rows[i + 1]["close"] if i < len(symbol_rows) - 1 else row["close"]
             next_ret = _pct_change(next_close, row["close"])
-            r["target"] = 1 if next_ret > 0 else 0
-            output.append(r)
+            feature_row["target"] = 1 if next_ret > 0 else 0
+            output.append(feature_row)
     output.sort(key=lambda x: (x["symbol"], x["date"]))
     return output
 

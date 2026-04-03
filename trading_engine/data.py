@@ -84,7 +84,7 @@ def apply_corporate_actions(rows: List[Dict[str, Any]], actions: Dict[str, Dict[
     for row in rows:
         factor = actions.get(row["symbol"], {}).get(row["date"], 1.0)
         nr = dict(row)
-        if factor and factor > 0:
+        if factor > 0:
             nr["open"] = nr["open"] / factor
             nr["high"] = nr["high"] / factor
             nr["low"] = nr["low"] / factor
@@ -135,4 +135,3 @@ def leakage_checks(rows: List[Dict[str, Any]]) -> None:
         for i in range(1, len(symbol_rows)):
             if symbol_rows[i]["date"] <= symbol_rows[i - 1]["date"]:
                 raise ValueError(f"Time leakage risk: non-increasing date for {symbol}")
-
