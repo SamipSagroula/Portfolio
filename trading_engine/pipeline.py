@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from typing import Dict, Any, List
 
@@ -137,8 +138,6 @@ def generate_latest_signals(config: EngineConfig) -> List[Dict[str, Any]]:
     output = Path(config.output_dir) / "latest_signals.json"
     if not output.exists():
         run_pipeline(config)
-    import json
 
     payload = json.loads(output.read_text())
     return payload.get("signals", [])
-
