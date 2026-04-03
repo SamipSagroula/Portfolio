@@ -18,6 +18,9 @@ class EngineConfig:
     slippage: float = 0.005
     annualization_factor: int = 252
     random_seed: int = 42
+    min_signal_probability: float = 0.55
+    min_signal_confidence: float = 0.55
+    max_recent_signals: int = 20
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
@@ -26,4 +29,3 @@ class EngineConfig:
         p = Path(path)
         p.parent.mkdir(parents=True, exist_ok=True)
         p.write_text(json.dumps(self.to_dict(), indent=2))
-

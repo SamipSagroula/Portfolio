@@ -26,11 +26,17 @@ def _serialize_artifacts(config: EngineConfig, payload: Dict[str, Any]) -> None:
     save_json(payload, str(out / "walk_forward_report.json"))
 
 
-def _build_signals(rows: List[Dict[str, Any]], probs: List[float], confidence: List[float]) -> List[Dict[str, Any]]:
+def _build_signals(
+    rows: List[Dict[str, Any]],
+    probs: List[float],
+    confidence: List[float],
+    min_signal_probability: float,
+    max_recent_signals: int,
+) -> List[Dict[str, Any]]:
     signals: List[Dict[str, Any]] = []
     n = min(len(rows), len(probs), len(confidence))
     for i in range(n):
-        if probs[i] > 0.55:
+        if probs[i] > min_signal_probability:
             signals.append(
                 {
                     "date": rows[i]["date"].isoformat(),
@@ -40,7 +46,7 @@ def _build_signals(rows: List[Dict[str, Any]], probs: List[float], confidence: L
                     "confidence": round(confidence[i], 4),
                 }
             )
-    return signals[-20:]
+    return signals[-max_recent_signals:]
 
 
 def run_pipeline(config: EngineConfig) -> Dict[str, Any]:
@@ -87,6 +93,8 @@ def run_pipeline(config: EngineConfig) -> Dict[str, Any]:
             dp_fee=config.dp_fee,
             slippage=config.slippage,
             risk_reward_ratio=config.risk_reward_ratio,
+            min_signal_probability=config.min_signal_probability,
+            min_signal_confidence=config.min_signal_confidence,
         )
         fold_returns = bt["returns"]
         fold_equity = bt["equity_curve"]
@@ -109,7 +117,13 @@ def run_pipeline(config: EngineConfig) -> Dict[str, Any]:
             }
         )
 
-        latest_signals = _build_signals(test_rows, p_ens, conf)
+        latest_signals = _build_signals(
+            test_rows,
+            p_ens,
+            conf,
+            min_signal_probability=config.min_signal_probability,
+            max_recent_signals=config.max_recent_signals,
+        )
         final_models = {"xgb": xgb, "lstm": lstm, "meta": meta}
 
     summary = {

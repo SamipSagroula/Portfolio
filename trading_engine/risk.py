@@ -50,6 +50,8 @@ def backtest(
     dp_fee: float,
     slippage: float,
     risk_reward_ratio: float = 2.0,
+    min_signal_probability: float = 0.55,
+    min_signal_confidence: float = 0.55,
 ) -> Dict[str, Any]:
     equity = 100000.0
     eq_curve = [equity]
@@ -61,7 +63,7 @@ def backtest(
         entry = float(r["close"])
         atr = float(r.get("atr_14", 0.0))
         rr = atr_stop_and_target(entry, atr, risk_reward_ratio=risk_reward_ratio)
-        if probs[i] > 0.55 and confidence[i] > 0.55:
+        if probs[i] > min_signal_probability and confidence[i] > min_signal_confidence:
             nxt = rows[i + 1]
             exit_price = float(nxt["close"])
             pnl = apply_transaction_cost(
@@ -90,4 +92,3 @@ def backtest(
                 }
             )
     return {"equity_curve": eq_curve, "returns": returns, "trades": trades}
-
