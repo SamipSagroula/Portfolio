@@ -5,6 +5,7 @@ import math
 
 
 def apply_transaction_cost(entry: float, exit_price: float, qty: float, sebon_commission: float, dp_fee: float, slippage: float) -> float:
+    """Compute net PnL after SEBON-related commission, DP fee, and slippage costs."""
     gross = (exit_price - entry) * qty
     turnover = (entry + exit_price) * qty
     fees = turnover * sebon_commission + dp_fee

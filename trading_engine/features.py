@@ -69,8 +69,12 @@ def engineer_features(rows: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
             # SMC proxies
             prev_high = prev["high"]
             prev_low = prev["low"]
-            r["msb"] = 1.0 if row["close"] > prev_high or row["close"] < prev_low else 0.0
-            r["fvg"] = 1.0 if i >= 2 and lows[i] > highs[i - 2] else 0.0
+            # Market Structure Break (MSB) and Fair Value Gap (FVG) Smart Money Concept features.
+            r["market_structure_break"] = 1.0 if row["close"] > prev_high or row["close"] < prev_low else 0.0
+            r["fair_value_gap"] = 1.0 if i >= 2 and lows[i] > highs[i - 2] else 0.0
+            # Backward-compatible aliases.
+            r["msb"] = r["market_structure_break"]
+            r["fvg"] = r["fair_value_gap"]
             # Volatility
             r["garman_klass_vol"] = garman_klass_volatility(row["open"], row["high"], row["low"], row["close"])
             r["atr_14"] = atr[i]
@@ -88,8 +92,8 @@ def feature_columns() -> List[str]:
         "amihud_illiquidity",
         "ts_momentum_30",
         "sector_relative_strength",
-        "msb",
-        "fvg",
+        "market_structure_break",
+        "fair_value_gap",
         "garman_klass_vol",
         "atr_14",
     ]
@@ -100,4 +104,3 @@ def train_matrix(rows: List[Dict[str, Any]]) -> Tuple[List[List[float]], List[in
     x = [[float(r.get(c, 0.0)) for c in cols] for r in rows]
     y = [int(r.get("target", 0)) for r in rows]
     return x, y
-
