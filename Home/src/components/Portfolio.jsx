@@ -169,7 +169,7 @@ const skills = [
     glow: 'blue'
   },
   {
-    name: 'Unreal',
+    name: 'Unreal Engine',
     icon: <Gamepad2 className="w-8 h-8" />,
     expertise: 'Advanced',
     gradient: 'from-purple-400 to-pink-500',
